@@ -10,6 +10,7 @@ https://cseweb.ucsd.edu/~alchern/teaching/cse167_fa21/project-raytracing2.pdf
 https://cseweb.ucsd.edu/~alchern/teaching/cse167_fa21/project-raytracing-bonus.pdf
 https://cseweb.ucsd.edu/~alchern/teaching/cse167_fa21/
 
+
 https://freeimage.sourceforge.io/fnet/html/85BD7B30.htm
 
 
