@@ -15,7 +15,7 @@
 #include <stack>
 #include "Transform.h"
 #include <FreeImage.h>
-
+const float pi = 3.14159265
 
 using namespace std; 
 
@@ -24,9 +24,6 @@ using namespace std;
 #include "variables.h" 
 #include "readfile.h" // prototypes for readfile.cpp  
 void display(void);  // prototype for display function.  
-
-Grader grader;
-bool allowGrader = false;
 
 // Reshapes the window
 void reshape(int width, int height){
@@ -178,6 +175,23 @@ void init() {
   // Initialize geometric shapes
   initBufferObjects();
   initTeapot(); initCube(); initSphere();
+}
+
+Ray project_ray(int i, int j){
+  float new_i = i + 0.5;
+  float new_j = j + 0.5;
+
+  glm::vec3 w = glm::normalize(eye - center);
+  glm::vec3 u = glm::normalize(glm::cross(up, w));
+  glm::vec3 v = glm::normalize(glm::cross(w, u));
+
+  float fovy_radian = fovy * pi/180;
+  float alpha = tan(fovy_radian/2) * aspect * ((new_j - (float)w/2)/(w/2));
+  float beta = tan(fovy_radian/2) * (((double)h/2 - new_i) / (h/2));
+
+  glm::vec3 p1 = glm::normalize(alpha*u + beta*v - w);
+
+  return Ray(alpha, beta, eye, p1);
 }
 
 int main(int argc, char* argv[]) {
