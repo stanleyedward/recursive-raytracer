@@ -9,8 +9,7 @@ class Ray{
     public:
         glm::vec3 p0, p1;
         float alpha, beta;
-        Ray(float alphaInput, float betaInput, glm::vec3 p0, glm::vec3 p1);
-        
+        Ray(float alpha, float beta, glm::vec3 p0, glm::vec3 p1);
 };
 
 #endif
