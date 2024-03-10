@@ -45,7 +45,7 @@ EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user
 // EXTERN mat4 projection, modelview; // The mvp matrices
 // EXTERN GLuint projectionPos, modelviewPos; // Uniform locations of the above matrices
 static enum {view, translate, scale} transop ; // which operation to transform 
-enum shape {cube, sphere, teapot} ;
+enum shape {cube, sphere, teapot, triangle} ;
 EXTERN float sx, sy ; // the scale in x and y 
 EXTERN float tx, ty ; // the translation in x and y
 

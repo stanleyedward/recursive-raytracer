@@ -16,7 +16,6 @@
 #include "Transform.h"
 #include <FreeImage.h>
 #include <algorithm>
-const float pi = 3.14159265;
 
 using namespace std; 
 
@@ -26,29 +25,30 @@ using namespace std;
 #include "readfile.h" // prototypes for readfile.cpp  
  
 
-void printHelp() {
-  std::cout << "\npress 'h' to print this message again.\n" 
-    << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
-    << "press 'i' to run image grader test cases\n"
-    << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"       
-    << "press 'r' to reset the transformations.\n"
-    << "press 'v' 't' 's' to do view [default], translate, scale.\n"
-    << "press ESC to quit.\n" ;      
-}
+// void printHelp() {
+//   std::cout << "\npress 'h' to print this message again.\n" 
+//     << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
+//     << "press 'i' to run image grader test cases\n"
+//     << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"       
+//     << "press 'r' to reset the transformations.\n"
+//     << "press 'v' 't' 's' to do view [default], translate, scale.\n"
+//     << "press ESC to quit.\n" ;      
+// }
 
 Ray project_ray(int i, int j){
   float new_i = i + 0.5;
   float new_j = j + 0.5;
 
-  glm::vec3 w = glm::normalize(eye - center);
-  glm::vec3 u = glm::normalize(glm::cross(up, w));
-  glm::vec3 v = glm::normalize(glm::cross(w, u));
+  glm::vec3 wV = glm::normalize(eye - center);
+  glm::vec3 uV = glm::normalize(glm::cross(up, wV));
+  glm::vec3 vV = glm::normalize(glm::cross(wV, uV));
 
-  float fovy_radian = fovy * pi/180;
+  float fovy_radian = fovy * glm::pi<float>()/180;
+  float aspect = w * (float) h;
   float alpha = tan(fovy_radian/2) * aspect * ((new_j - (float)w/2)/(w/2));
   float beta = tan(fovy_radian/2) * (((double)h/2 - new_i) / (h/2));
 
-  glm::vec3 p1 = glm::normalize(alpha*u + beta*v - w);
+  glm::vec3 p1 = glm::normalize(alpha*uV + beta*vV - wV);
 
   return Ray(alpha, beta, eye, p1);
 }
@@ -152,13 +152,9 @@ intersection intersect(Ray ray){
           normal = normalize(vec3(transpose(inverse_transform) * normal_sphere));
         }
       }
-      else if(obj->type == cube){
-          //none
-      }
-
     }
   }
-  return intersection(min_t,p_hit, normal, index_hit, &ray)
+  return intersection(min_t,p_hit, normal, index_hit, &ray);
 }
 
 vec4 ComputeLight(glm::vec3 direction, glm::vec4 light_color, glm::vec3 normal, glm::vec3 half_vec, glm::vec4 diffuse, glm::vec4 specular, float shininess, bool is_triangle){
@@ -190,7 +186,7 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular_input
     Ray recursive_ray = Ray(0, 0, intersect_temp->P, rec_direction);
 
     for(int i = 0; i<numused; i++){ 
-      glm:vec3 position0 = glm::vec3(lightposn[i*4 + 0], lightposn[i*4 + 1]], lightposn[i*4 +2]);
+      glm:vec3 position0 = glm::vec3(lightposn[i*4 + 0], lightposn[i*4 + 1], lightposn[i*4 +2]);
       glm::vec3 direction0;
 
       float L = 1;
@@ -201,7 +197,7 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular_input
         float d = length(direction0);
         L = 1/(attenuation.x, attenuation.y*d, attenuation.z*d*d);
 
-        Ray ray_to_light_source = Ray(0,0, intersect_temp->, direction0);
+        Ray ray_to_light_source = Ray(0,0, intersect_temp->P, direction0);
         intersection visibility = intersect(ray_to_light_source);
 
         if(visibility.t < 1){
@@ -251,9 +247,9 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular_input
       
     }
     else{
-      color[0] = ((obj->ambient)[2] + (obj->emission)[2] + all_colors) * 255;
-      color[1] = ((obj->ambient)[1] + (obj->emission)[1] + all_colors) * 255;
-      color[2] = ((obj->ambient)[0] + (obj->emission)[0] + all_colors) * 255;
+      color[0] = ((obj->ambient)[2] + (obj->emission)[2] + all_colors[2]) * 255;
+      color[1] = ((obj->ambient)[1] + (obj->emission)[1] + all_colors[1]) * 255;
+      color[2] = ((obj->ambient)[0] + (obj->emission)[0] + all_colors[0]) * 255;
       
     }
 
@@ -327,7 +323,7 @@ int main(int argc, char* argv[]) {
   }
 
   save_screenshot(pixels, fname);
-  printHelp();
+  // printHelp();
   FreeImage_DeInitialise();
 
   return 0;

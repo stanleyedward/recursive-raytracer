@@ -214,13 +214,31 @@ string readfile(const char* filename)
 
               // Set the object's type
               if (cmd == "sphere") {
-                obj->type = sphere; 
+                  validinput = readvals(s, 4, values);
+                  if (validinput) {
+                      obj->type = sphere;
+                      (obj->center)[0] = values[0];
+                      (obj->center)[1] = values[1];
+                      (obj->center)[2] = values[2];
+                      obj->size = values[3];
+                  }else{
+                      cerr << "ERROR sphere";
+                  }
               } else if (cmd == "cube") {
-                obj->type = cube; 
+                  obj->type = cube;
               } else if (cmd == "teapot") {
-                obj->type = teapot; 
+                  obj->type = teapot;
+              } else if (cmd == "tri") {
+                  validinput = readvals(s, 3, values);
+                  if (validinput) {
+                      obj->type = triangle;
+                      (obj->indices)[0] = values[0];
+                      (obj->indices)[1] = values[1];
+                      (obj->indices)[2] = values[2];
+                  }else{
+                      cerr << "ERROR triangle";
+                  }
               }
-            }
             ++numobjects; 
           }
         }
