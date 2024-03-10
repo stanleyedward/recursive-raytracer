@@ -16,7 +16,7 @@
 #include "Transform.h"
 #include <FreeImage.h>
 #include <algorithm>
-const float pi = 3.14159265
+const float pi = 3.14159265;
 
 using namespace std; 
 
@@ -117,6 +117,41 @@ intersection intersect(Ray ray){
 
     } 
     else if(obj->type == sphere){
+      glm::mat4 inverse_transform = inverse(obj->transform);
+      glm::vec4 p0t = inverse_transform * glm::vec4(ray.p0, 1);
+      glm::vec4 p1t = inverse_transform * glm::vec4(ray.p1, 0);
+
+      Ray transformed_ray = Ray(ray.alpha, ray.beta, glm::vec3(p0t), glm::vec3(p1t));
+
+      float a = dot(transformed_ray.p1, transformed_ray.p1);
+      float b = 2*dot(transformed_ray.p1, (transformed_ray.p0 - obj->center));
+      float c = dot(transformed_ray.p0 - obj->center, transformed_ray.p0 - obj->center) - obj->size * obj ->size;
+
+      float discriminant = b*b - 4*a*c;
+
+      if(discriminant < 0){
+        
+      }
+
+      else{
+        float root1 = (-b + sqrt(discriminant)) / (2*a);
+        float root2 = (-b - sqrt(discriminant)) / (2*a);
+
+        float t = std::min(root1, root2);
+
+        if(min_t > t && t > MIN_T_ALLOWED){
+          min_t = t;
+          hit_object = obj;
+          index_hit = i;
+
+          glm::vec3 pt = transformed_ray.p0 + t*transformed_ray.p1;
+          glm::vec4 p = obj->transform * glm::vec4(pt, 1);
+          glm::vec4 normal_sphere = glm::vec4(pt = obj->center, 0);
+          p_hit = glm::vec3(p/p.w);
+
+          normal = normalize(vec3(transpose(inverse_transform) * normal_sphere));
+        }
+      }
 
     }
   }
