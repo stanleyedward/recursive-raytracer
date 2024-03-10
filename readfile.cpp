@@ -318,4 +318,6 @@ string readfile(const char* filename)
     cerr << "Unable to Open Input Data File " << filename << "\n"; 
     throw 2; 
   }
+
+  return fname;
 }
