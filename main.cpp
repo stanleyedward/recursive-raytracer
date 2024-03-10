@@ -273,7 +273,7 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular_input
   }
 }
 
-void ray_tracer(Ray* ray, BYTE* color, float* specular_input){
+void ray_tracer(Ray ray, BYTE* color, float* specular_input){
   current_depth++;
 
   intersection intersection = intersect(ray);
@@ -291,11 +291,45 @@ void ray_tracer(Ray* ray, BYTE* color, float* specular_input){
   }
 }
 
+void save_screenshot(BYTE* pixels, string filename){
+  FIBITMAP* img = FreeImage_ConvertFromRawBits(pixels, w, h, w* 3, 24, 0xFF0000, 0x00FF00, 0x0000FF, true);
+  std::cout << "Saving screenshot: " << filename << "\n";
+    
+  FreeImage_Save(FIF_PNG, img, filename.c_str(), 0);
+}
+
 int main(int argc, char* argv[]) {
   int done_val = 0;
   max_depth = 5;
   float all_specular_lights[max_depth * 3];
   attenuation = vec3(1,0, 0);
 
-  
+  FreeImage_Initialise();
+  string fname = readfile(argv[1]);
+  int pix = w*h;
+  BYTE pixels[pix* 3];
+  for(int i=0; i<h;i++){
+    for(int j=0; j<w; j++){
+      current_depth = 0;
+      Ray ray = project_ray(i, j);
+      ray_tracer(ray, &pixels[(i*w+j)*3], all_specular_lights);
+
+      int percent = (i*j / (float)pix)*100;
+      if(percent%100 >=done_val){
+        printf("Finished %d %%\n", percent);
+        done_val+=2;
+      }
+    }
+  }
+
+  if(fname.empty()){
+    save_screenshot(pixels, "Result.png");
+  }
+
+  save_screenshot(pixels, fname);
+  printHelp();
+  FreeImage_DeInitialise();
+
+  return 0;
+
 }
