@@ -16,8 +16,15 @@
 EXTERN int amount; // The amount of rotation for each arrow press
 EXTERN vec3 eye; // The (regularly updated) vector coordinates of the eye 
 EXTERN vec3 up;  // The (regularly updated) vector coordinates of the up 
+EXTERN const char * fileThename;
+EXTERN int maxdepth;
+EXTERN vec3 attenuation;
+EXTERN int max_depth;
+EXTERN int current_depth;
 
 #ifdef MAINPROGRAM 
+vec3 attenuation_init(1,0,0) ;
+int max_depth_init = 5;
 vec3 eyeinit(0.0,0.0,5.0) ; // Initial eye position, also for resets
 vec3 upinit(0.0,1.0,0.0) ; // Initial up position, also for resets
 vec3 center(0.0,0.0,0.0) ; // Center look at point 
@@ -34,51 +41,58 @@ EXTERN float fovy ;
 #endif 
 
 EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user 
-EXTERN GLuint vertexshader, fragmentshader, shaderprogram ; // shaders
-EXTERN mat4 projection, modelview; // The mvp matrices
-EXTERN GLuint projectionPos, modelviewPos; // Uniform locations of the above matrices
+// EXTERN GLuint vertexshader, fragmentshader, shaderprogram ; // shaders
+// EXTERN mat4 projection, modelview; // The mvp matrices
+// EXTERN GLuint projectionPos, modelviewPos; // Uniform locations of the above matrices
 static enum {view, translate, scale} transop ; // which operation to transform 
 enum shape {cube, sphere, teapot} ;
 EXTERN float sx, sy ; // the scale in x and y 
 EXTERN float tx, ty ; // the translation in x and y
 
 // Lighting parameter array, similar to that in the fragment shader
-const int numLights = 10 ; 
-EXTERN GLfloat lightposn [4*numLights] ; // Light Positions
-EXTERN GLfloat lightcolor[4*numLights] ; // Light Colors
-EXTERN GLfloat lightransf[4*numLights] ; // Lights transformed by modelview
-EXTERN int numused ;                     // How many lights are used 
+// const int numLights = 10 ; 
+// // EXTERN GLfloat lightposn [4*numLights] ; // Light Positions
+// // EXTERN GLfloat lightcolor[4*numLights] ; // Light Colors
+// // EXTERN GLfloat lightransf[4*numLights] ; // Lights transformed by modelview
+// EXTERN int numused ;                     // How many lights are used 
+
+// vertices
+const int numVertices = 100000 ;
+EXTERN vec3 vertex [numVertices] ;
+EXTERN int numvertex ;
 
 // Materials (read from file) 
 // With multiple objects, these are colors for each.
-EXTERN GLfloat ambient[4] ; 
-EXTERN GLfloat diffuse[4] ; 
-EXTERN GLfloat specular[4] ; 
-EXTERN GLfloat emission[4] ; 
-EXTERN GLfloat shininess ; 
+EXTERN float ambient[4] ;
+EXTERN float diffuse[4] ;
+EXTERN float specular[4] ;
+EXTERN float emission[4] ;
+EXTERN float shininess ;
 
 // For multiple objects, read from a file.  
-const int maxobjects = 10 ; 
+const int maxobjects = 100000 ;
 EXTERN int numobjects ; 
 EXTERN struct object {
   shape type ; 
-  GLfloat size ;
-  GLfloat ambient[4] ; 
-  GLfloat diffuse[4] ; 
-  GLfloat specular[4] ;
-  GLfloat emission[4] ; 
-  GLfloat shininess ;
+  float size ;
+  float ambient[4] ;
+  float diffuse[4] ;
+  float specular[4] ;
+  float emission[4] ;
+  float shininess ;
+  int indices[3] ;
+  vec3 center;
   mat4 transform ; 
 } objects[maxobjects] ;
 
 // Variables to set uniform params for lighting fragment shader 
-EXTERN GLuint lightcol ; 
-EXTERN GLuint lightpos ; 
-EXTERN GLuint numusedcol ; 
-EXTERN GLuint enablelighting ; 
-EXTERN GLuint ambientcol ; 
-EXTERN GLuint diffusecol ; 
-EXTERN GLuint specularcol ; 
-EXTERN GLuint emissioncol ; 
-EXTERN GLuint shininesscol ; 
+EXTERN uint lightcol ; 
+EXTERN uint lightpos ; 
+EXTERN uint numusedcol ; 
+EXTERN uint enablelighting ; 
+EXTERN uint ambientcol ; 
+EXTERN uint diffusecol ; 
+EXTERN uint specularcol ; 
+EXTERN uint emissioncol ; 
+EXTERN uint shininesscol ; 
 
