@@ -184,6 +184,32 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular){
     object* obj = &(objects[intersect_temp->object_index]);
 
     glm::vec4 all_colors = glm::vec4(0, 0, 0, 0);
+    glm::vec3 ray_direction = normalize(intersect_temp->ray->p1);
+    glm::vec3 rec_direction = normalize(ray_direction - 2*dot(ray_direction, intersect_temp->N) *intersect_temp->N);
+    
+    Ray recursive_ray = Ray(0, 0, intersect_temp->P, rec_direction);
+
+    for(int i = 0; i<numused; i++){
+      glm:vec3 position0 = glm::vec3(lightposn[i*4 + 0], lightposn[i*4 + 1]], lightposn[i*4 +2]);
+      glm::vec3 direction0;
+
+      float L = 1;
+      float V = 1;
+
+      if(lightposn[i*4 + 3] != 0){
+        direction0 = position0 = intersect_temp->P;
+        float d = length(direction0);
+        L = 1/(attenuation.x, attenuation.y*d, attenuation.z*d*d);
+
+        Ray ray_to_light_source = Ray(0,0, intersect_temp->, direction0);
+        intersection visibility = intersect(ray_to_light_source);
+
+        if(visibility.t < 1){
+          V = 0;
+        }
+      }
+      glm::vec3
+    }
   }
 }
 
