@@ -15,22 +15,17 @@ endif
 
 RM = /bin/rm -f 
 all: raytracer
-transforms: main.o shaders.o Transform.o readfile.o display.o variables.h readfile.h shaders.h Transform.h grader.o UCSD/grader.h \
-	   Geometry.o
-	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o Geometry.o readfile.o display.o grader.o $(INCFLAGS) $(LDFLAGS) 
-main.o: main.cpp shaders.h Transform.h variables.h
+raytracer: main.o intersection.o Transform.o readfile.o ray_proj.o variables.h readfile.h intersection.h Transform.h ray_proj.h 
+	$(CC) $(CFLAGS) -o raytracer ray_proj.o main.o Transform.o intersection.o readfile.o $(INCFLAGS) $(LDFLAGS) 
+main.o: main.cpp ray_proj.h Transform.h intersection.h readfile.h variables.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c main.cpp
-shaders.o: shaders.cpp shaders.h
-	$(CC) $(CFLAGS) $(INCFLAGS) -c shaders.cpp
-readfile.o: readfile.cpp readfile.h variables.h 
+ray_proj.o: ray_proj.cpp ray_proj.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c ray_proj.cpp
+readfile.o: readfile.cpp readfile.h variables.h Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c readfile.cpp
-display.o: display.cpp variables.h Geometry.h
-	$(CC) $(CFLAGS) $(INCFLAGS) -c display.cpp
+intersection.o: intersection.cpp intersection.h ray_proj.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c intersection.cpp
 Transform.o: Transform.cpp Transform.h 
-	$(CC) $(CFLAGS) $(INCFLAGS) -c Transform.cpp  
-grader.o: UCSD/grader.cpp UCSD/grader.h
-	$(CC) $(CFLAGS) $(INCFLAGS) -c UCSD/grader.cpp
-Geometry.o: Geometry.cpp Geometry.h Transform.h variables.h
-	$(CC) $(CFLAGS) $(INCFLAGS) -c Geometry.cpp
+	$(CC) $(CFLAGS) $(INCFLAGS) -c Transform.cpp
 clean: 
-	$(RM) *.o transforms *.png
+	$(RM) *.o raytracer *.png

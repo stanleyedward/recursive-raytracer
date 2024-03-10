@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "optional": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "string": "cpp"
     }
 }
