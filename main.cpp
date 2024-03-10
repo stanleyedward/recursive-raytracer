@@ -175,7 +175,7 @@ vec4 ComputeLight(glm::vec3 direction, glm::vec4 light_color, glm::vec3 normal, 
     return retval;
 }
 
-Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular){
+Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular_input){
   if(intersect_temp->t != INFINITY){
     if(current_depth > 2){
       int ii=0;
@@ -229,9 +229,47 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular){
         specular_temp[j] = (obj->specular)[j];
       }
 
-      glm::vec4 col0 = ComputeLight()
-
+      glm::vec4 color0 = ComputeLight(direction0, light_color_temp, intersect_temp->N, half0, diffuse_temp, specular_temp, obj->shininess, obj->type==triangle);
+      all_colors += V * L * color0;
     }
+
+    BYTE current_color[3];
+    current_color[0] = ((obj->ambient)[2] + (obj->emission)[2] + all_colors[2]) * 255;
+    current_color[1] = ((obj->ambient)[1] + (obj->emission)[1] + all_colors[1]) * 255;
+    current_color[2] = ((obj->ambient)[0] + (obj->emission)[0] + all_colors[0]) * 255;
+
+    if(current_depth > 1){
+      for(int i=0; i< current_depth-1; i++){
+        current_color[0] *= specular_input[(i)*3+2];
+        current_color[1] *= specular_input[(i)*3+1];
+        current_color[2] *= specular_input[(i)*3];
+      }
+
+      color[0] += current_color[0];
+      color[1] += current_color[1];
+      color[2] += current_color[2];
+      
+    }
+    else{
+      color[0] = ((obj->ambient)[2] + (obj->emission)[2] + all_colors) * 255;
+      color[1] = ((obj->ambient)[1] + (obj->emission)[1] + all_colors) * 255;
+      color[2] = ((obj->ambient)[0] + (obj->emission)[0] + all_colors) * 255;
+      
+    }
+
+    return &recursive_ray;
+  }
+  else{
+    if (current_depth>1){
+      //none
+    }
+    else{
+      color[0]=0;
+      color[1]=0;
+      color[2]=0;
+    }
+
+    return nullptr;
   }
 }
 
