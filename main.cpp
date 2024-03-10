@@ -161,7 +161,7 @@ intersection intersect(Ray ray){
   return intersection(min_t,p_hit, normal, index_hit, &ray)
 }
 
-vec4 ComputeLight(glm::vec3 direction, glm::vec4 light_color, glm::vec3 normal, glm::vec3 half_vec, glm::vec4 diffuse, glm::vec4 specular, float shininess) {
+vec4 ComputeLight(glm::vec3 direction, glm::vec4 light_color, glm::vec3 normal, glm::vec3 half_vec, glm::vec4 diffuse, glm::vec4 specular, float shininess, bool is_triangle){
     
     float nDotL = dot(normal, direction)  ;
 
@@ -224,7 +224,13 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular){
       glm::vec4 diffuse_temp = glm::vec4(1);
       glm::vec4 specular_temp = glm::vec4(1);
 
-      
+      for(int j=0; j<4; j++){
+        diffuse_temp[j] = (obj->diffuse)[j];
+        specular_temp[j] = (obj->specular)[j];
+      }
+
+      glm::vec4 col0 = ComputeLight()
+
     }
   }
 }
