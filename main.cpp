@@ -161,6 +161,19 @@ intersection intersect(Ray ray){
   return intersection(min_t,p_hit, normal, index_hit, &ray)
 }
 
+vec4 ComputeLight(glm::vec3 direction, glm::vec4 light_color, glm::vec3 normal, glm::vec3 half_vec, glm::vec4 diffuse, glm::vec4 specular, float shininess) {
+    
+    float nDotL = dot(normal, direction)  ;
+
+    glm::vec4 lambertian = diffuse * light_color * std::max(nDotL, 0.0f);
+
+    float nDotH = glm::dot(normal, half_vec);
+    glm::vec4 phong = specular * light_color * pow(std::max(nDotH, 0.0f), shininess);
+    
+    glm::vec4 retval = lambertian + phong;
+
+    return retval;
+}
 
 int main(int argc, char* argv[]) {
 
