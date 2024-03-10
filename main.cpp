@@ -15,6 +15,7 @@
 #include <stack>
 #include "Transform.h"
 #include <FreeImage.h>
+#include <algorithm>
 const float pi = 3.14159265
 
 using namespace std; 
@@ -23,39 +24,7 @@ using namespace std;
 #define MAINPROGRAM 
 #include "variables.h" 
 #include "readfile.h" // prototypes for readfile.cpp  
-void display(void);  // prototype for display function.  
-
-// Reshapes the window
-void reshape(int width, int height){
-  w = width;
-  h = height;
-
-  glViewport(0, 0, w, h);
-
-  float aspect = (float) w / (float) h, zNear = 0.1, zFar = 99.0 ;
-  // I am changing the projection matrix to fit with the new window aspect ratio
-  if (useGlu) projection = glm::perspective(glm::radians(fovy),aspect,zNear,zFar) ; 
-  else {
-	  projection = Transform::perspective(fovy,aspect,zNear,zFar) ;
-  }
-  // Now send the updated projection matrix to the shader
-  glUniformMatrix4fv(projectionPos, 1, GL_FALSE, &projection[0][0]);
-}
-
-void saveScreenshot(string fname) {
-  int pix = w * h;
-  BYTE *pixels = new BYTE[3*pix];	
-  glReadBuffer(GL_FRONT);
-  glReadPixels(0,0,w,h,GL_BGR,GL_UNSIGNED_BYTE, pixels);
-
-  FIBITMAP *img = FreeImage_ConvertFromRawBits(pixels, w, h, w * 3, 24, 0xFF0000, 0x00FF00, 0x0000FF, false);
-
-  std::cout << "Saving screenshot: " << fname << "\n";
-
-  FreeImage_Save(FIF_PNG, img, fname.c_str(), 0);
-  delete[] pixels;
-}
-
+ 
 
 void printHelp() {
   std::cout << "\npress 'h' to print this message again.\n" 
@@ -65,116 +34,6 @@ void printHelp() {
     << "press 'r' to reset the transformations.\n"
     << "press 'v' 't' 's' to do view [default], translate, scale.\n"
     << "press ESC to quit.\n" ;      
-}
-
-
-void keyboard(unsigned char key, int x, int y) {
-  switch(key) {
-    case '+':
-      amount++;
-      std::cout << "amount set to " << amount << "\n" ;
-      break;
-    case '-':
-      amount--;
-      std::cout << "amount set to " << amount << "\n" ; 
-      break;
-    case 'i':
-      if(useGlu) {
-        std::cout << "Please disable glm::LookAt by pressing 'g'"
-          << " before running tests\n";
-      }
-      else if(!allowGrader) {
-        std::cout << "Error: no input file specified for grader\n";
-      } else {
-        std::cout << "Running tests...\n";
-        grader.runTests();
-        std::cout << "Done! [ESC to quit]\n";
-      }
-      break;
-    case 'g':
-      useGlu = !useGlu;
-      reshape(w,h) ; 
-      std::cout << "Using glm::LookAt and glm::Perspective set to: " << (useGlu ? " true " : " false ") << "\n" ; 
-      break;
-    case 'h':
-      printHelp();
-      break;
-    case 27:  // Escape to quit
-      exit(0) ;
-      break ;
-    case 'r': // reset eye and up vectors, scale and translate. 
-      eye = eyeinit ; 
-      up = upinit ; 
-      amount = amountinit ;
-      transop = view ;
-      sx = sy = 1.0 ; 
-      tx = ty = 0.0 ; 
-      break ;   
-    case 'v': 
-      transop = view ;
-      std::cout << "Operation is set to View\n" ; 
-      break ; 
-    case 't':
-      transop = translate ; 
-      std::cout << "Operation is set to Translate\n" ; 
-      break ; 
-    case 's':
-      transop = scale ; 
-      std::cout << "Operation is set to Scale\n" ; 
-      break ; 
-  }
-  glutPostRedisplay();
-}
-
-//  You will need to enter code for the arrow keys 
-//  When an arrow key is pressed, it will call your transform functions
-
-void specialKey(int key, int x, int y) {
-  switch(key) {
-    case 100: //left
-      if (transop == view) Transform::left(amount, eye,  up);
-      else if (transop == scale) sx -= amount * 0.01 ; 
-      else if (transop == translate) tx -= amount * 0.01 ; 
-      break;
-    case 101: //up
-      if (transop == view) Transform::up(amount,  eye,  up);
-      else if (transop == scale) sy += amount * 0.01 ; 
-      else if (transop == translate) ty += amount * 0.01 ; 
-      break;
-    case 102: //right
-      if (transop == view) Transform::left(-amount, eye,  up);
-      else if (transop == scale) sx += amount * 0.01 ; 
-      else if (transop == translate) tx += amount * 0.01 ; 
-      break;
-    case 103: //down
-      if (transop == view) Transform::up(-amount,  eye,  up);
-      else if (transop == scale) sy -= amount * 0.01 ; 
-      else if (transop == translate) ty -= amount * 0.01 ; 
-      break;
-  }
-  glutPostRedisplay();
-}
-
-void init() {
-  // Initialize shaders
-  vertexshader = initshaders(GL_VERTEX_SHADER, "shaders/light.vert.glsl") ;
-  fragmentshader = initshaders(GL_FRAGMENT_SHADER, "shaders/light.frag.glsl") ;
-  shaderprogram = initprogram(vertexshader, fragmentshader) ; 
-  // Get locations of all uniform variables.
-  enablelighting = glGetUniformLocation(shaderprogram,"enablelighting") ;
-  lightpos = glGetUniformLocation(shaderprogram,"lightposn") ;       
-  lightcol = glGetUniformLocation(shaderprogram,"lightcolor") ;       
-  numusedcol = glGetUniformLocation(shaderprogram,"numused") ;       
-  ambientcol = glGetUniformLocation(shaderprogram,"ambient") ;       
-  diffusecol = glGetUniformLocation(shaderprogram,"diffuse") ;       
-  specularcol = glGetUniformLocation(shaderprogram,"specular") ;       
-  emissioncol = glGetUniformLocation(shaderprogram,"emission") ;       
-  shininesscol = glGetUniformLocation(shaderprogram,"shininess") ;    
-  projectionPos = glGetUniformLocation(shaderprogram, "projection");
-  modelviewPos = glGetUniformLocation(shaderprogram, "modelview");
-  // Initialize geometric shapes
-  initBufferObjects();
-  initTeapot(); initCube(); initSphere();
 }
 
 Ray project_ray(int i, int j){
@@ -206,8 +65,8 @@ bool is_point_in_triangle(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 P){
     return false;
   }
 
-  vec3 u_cross_w = cross(u, w);
-  vec3 u_cross_v = cross(u, v);
+  glm::vec3 u_cross_w = cross(u, w);
+  glm::vec3 u_cross_v = cross(u, v);
 
   if (dot(u_cross_w, u_cross_v) < 0){ //check if t < 0
     return false; 
@@ -220,55 +79,50 @@ bool is_point_in_triangle(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 P){
   return (r + t <= 1);
 }
 
+intersection intersect(Ray ray){
+  glm::vec3 normal;
+  glm::vec3 p_hit;
+  int index_hit = -1;
+
+  float min_t = INFINITY;
+  float MIN_T_ALLOWED = 0.00001;
+
+  object* hit_object = NULL;
+
+  for(int i=0; i<numobjects; i++){
+    object* obj = &(objects[i]);
+    if(obj->type == triangle){
+
+      glm::vec3 AT = glm::vec3(obj->transform * glm::vec4(vertex[(obj->indices)[0]], 1));
+      glm::vec3 BT = glm::vec3(obj->transform * glm::vec4(vertex[(obj->indices)[1]],1));
+      glm::vec3 CT = glm::vec3(obj->transform * glm::vec4(vertex[(obj->indices)[2]],1));
+      
+      glm::vec3 abT = BT-AT;
+      glm::vec3 acT = CT-AT;
+      
+      glm::vec3 normalC = glm::normalize(cross(abT, acT));
+      float t = (dot(AT, normalC) - dot(ray.p0, normalC))/(dot(ray.p1, normalC));
+      glm::vec3 p = ray.p0 + t*ray.p1;
+
+      if (is_point_in_triangle(AT, BT, CT, p)){
+        if(min_t > t && t>MIN_T_ALLOWED){
+          min_t = t;
+          hit_object = obj;
+          index_hit = 1;
+          p_hit = p;
+          normal = normalC;
+      
+        }
+      }
+
+    } 
+    else if(obj->type == sphere){
+
+    }
+  }
+}
 
 
 int main(int argc, char* argv[]) {
 
-  if (argc < 2) {
-    cerr << "Usage: transforms scenefile [grader input (optional)]\n"; 
-    exit(-1); 
-  }
-
-  FreeImage_Initialise();
-  glutInit(&argc, argv);
-// OSX systems require an extra window init flag
-#ifdef __APPLE__
-  glutInitDisplayMode(GLUT_3_2_CORE_PROFILE | GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-#else
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-#endif
-  glutCreateWindow("HW2: Scene Viewer");
-
-#ifndef __APPLE__ // GLew not needed on OSX systems
-  GLenum err = glewInit() ; 
-  if (GLEW_OK != err) { 
-    std::cerr << "Error: " << glewGetString(err) << std::endl; 
-  } 
-#endif
-
-  init();
-  readfile(argv[1]) ; 
-  glutDisplayFunc(display);
-  glutSpecialFunc(specialKey);
-  glutKeyboardFunc(keyboard);
-  glutReshapeFunc(reshape);
-  glutReshapeWindow(w, h);
-
-  if (argc > 2) {
-    allowGrader = true;
-    stringstream tcid;
-    tcid << argv[1] << "." << argv[2];
-    grader.init(tcid.str());
-    grader.loadCommands(argv[2]);
-    grader.bindDisplayFunc(display);
-    grader.bindSpecialFunc(specialKey);
-    grader.bindKeyboardFunc(keyboard);
-    grader.bindScreenshotFunc(saveScreenshot);
-  }
-
-  printHelp();
-  glutMainLoop();
-  FreeImage_DeInitialise();
-  destroyBufferObjects();
-  return 0;
 }
