@@ -152,9 +152,13 @@ intersection intersect(Ray ray){
           normal = normalize(vec3(transpose(inverse_transform) * normal_sphere));
         }
       }
+      else if(obj->type == cube){
+
+      }
 
     }
   }
+  return intersection(min_t,p_hit, normal, index_hit, &ray)
 }
 
 
