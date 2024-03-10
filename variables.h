@@ -50,11 +50,11 @@ EXTERN float sx, sy ; // the scale in x and y
 EXTERN float tx, ty ; // the translation in x and y
 
 // Lighting parameter array, similar to that in the fragment shader
-// const int numLights = 10 ; 
-// // EXTERN GLfloat lightposn [4*numLights] ; // Light Positions
-// // EXTERN GLfloat lightcolor[4*numLights] ; // Light Colors
-// // EXTERN GLfloat lightransf[4*numLights] ; // Lights transformed by modelview
-// EXTERN int numused ;                     // How many lights are used 
+const int numLights = 10 ; 
+EXTERN float lightposn [4*numLights] ; // Light Positions
+EXTERN float lightcolor[4*numLights] ; // Light Colors
+EXTERN float lightransf[4*numLights] ; // Lights transformed by modelview
+EXTERN int numused ;                     // How many lights are used 
 
 // vertices
 const int numVertices = 100000 ;
