@@ -207,8 +207,24 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular){
         if(visibility.t < 1){
           V = 0;
         }
+
+        direction0 = normalize(direction0);
+
       }
-      glm::vec3
+      else{
+        direction0 = normalize(direction0);
+        Ray ray_to_light_source = Ray(0, 0, intersect_temp->P, direction0);
+        intersection visibility = intersect(ray_to_light_source);
+        if(visibility.t != INFINITY){
+          V=0;
+        }
+      }
+      glm::vec3 half0 = normalize(direction0 - ray_direction);
+      glm::vec4 light_color_temp = glm::vec4(lightcolor[i*4], lightcolor[i*4+1], lightcolor[i*4+2],1);
+      glm::vec4 diffuse_temp = glm::vec4(1);
+      glm::vec4 specular_temp = glm::vec4(1);
+
+      
     }
   }
 }
