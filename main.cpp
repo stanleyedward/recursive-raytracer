@@ -175,6 +175,18 @@ vec4 ComputeLight(glm::vec3 direction, glm::vec4 light_color, glm::vec3 normal, 
     return retval;
 }
 
+Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular){
+  if(intersect_temp->t != INFINITY){
+    if(current_depth > 2){
+      int ii=0;
+      ii++;
+    }
+    object* obj = &(objects[intersect_temp->object_index]);
+
+    glm::vec4 all_colors = glm::vec4(0, 0, 0, 0);
+  }
+}
+
 int main(int argc, char* argv[]) {
 
 }
