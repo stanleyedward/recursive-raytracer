@@ -153,7 +153,7 @@ intersection intersect(Ray ray){
         }
       }
       else if(obj->type == cube){
-
+          //none
       }
 
     }
@@ -189,7 +189,7 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular_input
     
     Ray recursive_ray = Ray(0, 0, intersect_temp->P, rec_direction);
 
-    for(int i = 0; i<numused; i++){
+    for(int i = 0; i<numused; i++){ 
       glm:vec3 position0 = glm::vec3(lightposn[i*4 + 0], lightposn[i*4 + 1]], lightposn[i*4 +2]);
       glm::vec3 direction0;
 
@@ -220,7 +220,7 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular_input
         }
       }
       glm::vec3 half0 = normalize(direction0 - ray_direction);
-      glm::vec4 light_color_temp = glm::vec4(lightcolor[i*4], lightcolor[i*4+1], lightcolor[i*4+2],1);
+      glm::vec4 light_color_temp = glm::vec4(lightcolor[i*4], lightcolor[i*4+1], lightcolor[i*4+2],1); 
       glm::vec4 diffuse_temp = glm::vec4(1);
       glm::vec4 specular_temp = glm::vec4(1);
 
@@ -292,5 +292,10 @@ void ray_tracer(Ray* ray, BYTE* color, float* specular_input){
 }
 
 int main(int argc, char* argv[]) {
+  int done_val = 0;
+  max_depth = 5;
+  float all_specular_lights[max_depth * 3];
+  attenuation = vec3(1,0, 0);
 
+  
 }
