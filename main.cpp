@@ -194,6 +194,34 @@ Ray project_ray(int i, int j){
   return Ray(alpha, beta, eye, p1);
 }
 
+bool is_point_in_triangle(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 P){
+  glm::vec3 u = B-A;
+  glm::vec3 v = C-A;
+  glm::vec3 w = P-A;
+
+  glm::vec3 v_cross_w = cross(v, w);
+  glm::vec3 v_cross_u = cross(v, u);
+
+  if(dot(v_cross_w, v_cross_u) < 0){ //check if r < 0
+    return false;
+  }
+
+  vec3 u_cross_w = cross(u, w);
+  vec3 u_cross_v = cross(u, v);
+
+  if (dot(u_cross_w, u_cross_v) < 0){ //check if t < 0
+    return false; 
+  }
+
+  float denominator = length(u_cross_v);
+  float r = length(v_cross_w) / denominator;
+  float t = length(u_cross_w) / denominator;
+
+  return (r + t <= 1);
+}
+
+
+
 int main(int argc, char* argv[]) {
 
   if (argc < 2) {
