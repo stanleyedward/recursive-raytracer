@@ -273,6 +273,24 @@ Ray* find_color(intersection* intersect_temp, BYTE* color, float* specular_input
   }
 }
 
+void ray_tracer(Ray* ray, BYTE* color, float* specular_input){
+  current_depth++;
+
+  intersection intersection = intersect(ray);
+  if(intersection.t != INFINITY){
+    object* obj = &(objects[intersection.object_index]);
+    specular_input[(current_depth-1) * 3] = (obj->specular)[0];
+    specular_input[(current_depth-1) * 3 + 1] = (obj->specular)[1];
+    specular_input[(current_depth-1) * 3 + 2] = (obj->specular)[2];
+  }
+
+  Ray* recursive_ray = find_color(&intersection, color, specular_input);
+
+  if(recursive_ray != nullptr && current_depth<max_depth){
+    ray_tracer(*recursive_ray, color, specular_input);
+  }
+}
+
 int main(int argc, char* argv[]) {
 
 }
