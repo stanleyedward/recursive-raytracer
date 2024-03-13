@@ -1,3 +1,4 @@
 *.o
 shaders/
 testfiles/
+.vscode
