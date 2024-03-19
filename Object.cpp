@@ -57,3 +57,26 @@ bool Sphere::GetIntersection(const Ray rayIn, float& out_t, vec3& out_n, vec3& o
 
     return true;
 }
+
+float Sphere::GetDiscriminant(float a, float b, float c){
+    return b * b - (4 * a * c);
+}
+
+bool Sphere::solveQuadratic(const float& a, const float& b, const float& c, float& x0, float& x1){
+    float discr = b * b - (4 * a * c);
+
+    if(discr < 0){return false;}
+    else if (discr == 0){x0 = x1 = -0.5f * b/a;}
+    else{
+        float tempPosX = -b + sqrt(discr);
+        float tempNegX = -b - sqrt(discr);
+        float twoA = 2 * a;
+        x0 = tempPosX / twoA;
+        x1 = tempNegX / twoA;
+    }
+
+    if(x0 > x1){std::swap(x0, x1);}
+
+    return true;
+
+}
