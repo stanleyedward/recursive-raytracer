@@ -17,5 +17,17 @@ Ray Camera::createRay(float i, float j, int width, int height, float aspectRatio
     float jF = j + 0.5f;
 
     float halfW = (float)width / 2.0f;
-    float halfF = (float)height / 2.0f;
+    float halfH = (float)height / 2.0f;
+
+    float alpha = fovx * ((jF - halfW) / halfW);
+    float beta = tan(radians(fovy) / 2) * ((halfH - iF) / halfH);
+
+    vec3 rayDirection = glm::normalize(-frontDirection + horDirection * alpha + up * beta);
+    Ray ray(eye, rayDirection);
+
+    return ray;
+}
+
+void Camera::SetupFovx(float aspectRatio){
+    fovx = tan(radians(fovy) / 2.0f) * aspectRatio;
 }
