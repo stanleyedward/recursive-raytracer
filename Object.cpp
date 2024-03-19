@@ -78,5 +78,78 @@ bool Sphere::solveQuadratic(const float& a, const float& b, const float& c, floa
     if(x0 > x1){std::swap(x0, x1);}
 
     return true;
+}
 
+bool Triangle::GetIntersection(const Ray rayIn, float& out_t, vec3& out_n, vec3& out_p){
+    float kEpsilon = 1e-8f;
+
+    Ray ray = rayIn;
+
+    vec3 orig = rayIn.origin;
+    vec3 dir = rayIn.direction;
+
+    vec4 A_ = transform * vec4(vertices[0].x, vertices[0].y, vertices[0].z, 1.0f);
+	vec4 B_ = transform * vec4(vertices[1].x, vertices[1].y, vertices[1].z, 1.0f);
+	vec4 C_ = transform * vec4(vertices[2].x, vertices[2].y, vertices[2].z, 1.0f);
+
+    vec3 A = vec3(A_ / A_.w);
+	vec3 B = vec3(B_ / B_.w);
+	vec3 C = vec3(C_ / C_.w);
+	vec3 AB = B - A;
+	vec3 AC = C - A;
+
+    vec3 m_Normal = cross(AB, AC);
+    float norm_norm = dot(m_Normal, m_Normal);
+
+    float area_full_triangle = length(m_Normal);
+
+    vec3 normal = normalize(m_Normal);
+
+    float dN = dot(m_Normal, A);
+    if (abs(dN) < kEpsilon){
+        return false;
+    }
+
+    float d = dot(m_Normal, A);
+    float t = (d - dot(m_Normal, orig)) / dN;
+
+    if (t < 0){
+        return false;
+    }
+
+    float u, v;
+
+    vec3 P = orig + (dir * t);
+
+    vec3 C_C;
+    vec3 AP = P - A;
+
+    C_C = cross(AB, AP);
+    if(dot(m_Normal, C_C) < 0){
+        return false;
+    }
+
+    vec3 edge1 = C - B;
+    vec3 BP = P - B;
+    C_C = cross(edge1, BP);
+    if(u = dot(m_Normal, C_C) < 0){
+        return false;
+    }
+
+    vec3 edge2 = A - C;
+    vec3 CP = P - C;
+    C_C = cross(edge2, CP);
+    if(v = dot(m_Normal, C_C) < 0){
+        return false;
+    }
+
+    u /= norm_norm;
+    v /= norm_norm;
+    vec4 trp = transform * vec4(P, 1.0f);
+    
+    out_p = P;
+    out_n = normal;
+    out_t = t;
+
+    return true;
 }
