@@ -40,10 +40,12 @@ class Triangle: public Object{
         Triangle(Vertex v1, Vertex v2, Vertex v3) : vertices {v1, v2, v3}{
             type = Shape::triangle;
         }
-
 };
 
 class Sphere: public Object{
+    private:
+        float GetDiscriminant(float a, float b, float c);
+    
     public:
         bool GetIntersection(const Ray rayIn, float& out_t, vec3& out_n, vec3& out_p);
         vec3 center;
@@ -53,8 +55,4 @@ class Sphere: public Object{
         Sphere(vec3 center, float radius) : center(center), radius(radius){
             type = Shape::sphere;
         }
-
-    private:
-        float GetDiscriminant(float a, float b, float c);
-
 };
