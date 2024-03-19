@@ -41,5 +41,14 @@ IntersectionData Renderer::GetIntersectionData(Ray ray){
 
 bool Renderer::IsBlocked(Ray ray){
     float t = INFINITY;
+    vec3 normal;
+    vec3 point;
     
+    for(int i = 0; i < m_Scene->numobjects; i++){
+        Object* current_obj = m_Scene->objects[i];
+        if(current_obj->GetIntersection(ray, t, normal, point)){
+            return true;
+        }
+    }
+    return false;
 }
