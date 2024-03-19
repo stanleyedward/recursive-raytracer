@@ -34,8 +34,8 @@ intersection.o: intersection.cpp intersection.h ray_proj.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c intersection.cpp
 
 
-raytracer: main.o intersection.o Transform.o readfile.o ray_proj.o variables.h readfile.h intersection.h Transform.h ray_proj.h 
-	$(CC) $(CFLAGS) -o raytracer ray_proj.o main.o Transform.o intersection.o readfile.o $(INCFLAGS) $(LDFLAGS) 
+raytracer: main.o intersection.o Transform.o readfile.o Object.o variables.h readfile.h intersection.h Transform.h ray_proj.h 
+	$(CC) $(CFLAGS) -o raytracer Object.o main.o Transform.o intersection.o readfile.o $(INCFLAGS) $(LDFLAGS) 
 
 clean: 
 	rm -rf *o *~ raytracer

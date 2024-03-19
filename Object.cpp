@@ -146,7 +146,7 @@ bool Triangle::GetIntersection(const Ray rayIn, float& out_t, vec3& out_n, vec3&
     u /= norm_norm;
     v /= norm_norm;
     vec4 trp = transform * vec4(P, 1.0f);
-    
+
     out_p = P;
     out_n = normal;
     out_t = t;
