@@ -57,7 +57,7 @@ EXTERN float lightransf[4*numLights] ; // Lights transformed by modelview
 EXTERN int numused ;                     // How many lights are used 
 
 // vertices
-const int numVertices = 100000 ;
+const int numVertices = 10000000 ;
 EXTERN vec3 vertex [numVertices] ;
 EXTERN int numvertex ;
 
@@ -70,7 +70,7 @@ EXTERN float emission[4] ;
 EXTERN float shininess ;
 
 // For multiple objects, read from a file.  
-const int maxobjects = 100000 ;
+const int maxobjects = 10000000 ;
 EXTERN int numobjects ; 
 EXTERN struct object {
   shape type ; 
