@@ -31,7 +31,7 @@ class Renderer{
     public:
     Renderer();
     void SceneRendering(std::string filename);
-    vec3 ComputeLight(vec3 direction, vec3 lightcolor, vec3 normal, vec3 halfvec, vec3 mydiffuse, vec3 myspecular, vec3 myshininess);
+    vec3 ComputeLight(vec3 direction, vec3 lightcolor, vec3 normal, vec3 halfvec, vec3 mydiffuse, vec3 myspecular, float myshininess);
     IntersectionData GetIntersectionData(Ray ray);
     void color(IntersectionData* intData, Ray ray, BYTE* color, float* specularIn);
     vec3 ComputeColor(Ray& ray, int current_depth);
