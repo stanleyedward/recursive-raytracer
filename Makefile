@@ -13,10 +13,17 @@ LDFLAGS = -L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L./lib/nix/ \
 		-L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lGLEW -lglut -lGLU -lGL -lX11 -lfreeimage
 endif
 
-RM = /bin/rm -f 
 all: raytracer
-raytracer: main.o intersection.o Transform.o readfile.o ray_proj.o variables.h readfile.h intersection.h Transform.h ray_proj.h 
-	$(CC) $(CFLAGS) -o raytracer ray_proj.o main.o Transform.o intersection.o readfile.o $(INCFLAGS) $(LDFLAGS) 
+
+Camera.o : Camera.cpp Camera.h
+	${CC} ${CFLAGS} ${INCFLAGS} -c Camera.cpp
+
+Object.o : Object.cpp Object.h
+	${CC} ${CFLAGS} ${INCFLAGS} -c Object.cpp
+
+Transform.o: Transform.cpp Transform.h
+	${CC} ${CFLAGS}  ${INCFLAGS} -c Transform.cpp
+
 main.o: main.cpp ray_proj.h Transform.h intersection.h readfile.h variables.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c main.cpp
 ray_proj.o: ray_proj.cpp ray_proj.h
@@ -25,7 +32,10 @@ readfile.o: readfile.cpp readfile.h variables.h Transform.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c readfile.cpp
 intersection.o: intersection.cpp intersection.h ray_proj.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c intersection.cpp
-Transform.o: Transform.cpp Transform.h 
-	$(CC) $(CFLAGS) $(INCFLAGS) -c Transform.cpp
+
+
+raytracer: main.o intersection.o Transform.o readfile.o ray_proj.o variables.h readfile.h intersection.h Transform.h ray_proj.h 
+	$(CC) $(CFLAGS) -o raytracer ray_proj.o main.o Transform.o intersection.o readfile.o $(INCFLAGS) $(LDFLAGS) 
+
 clean: 
-	$(RM) *.o raytracer *.png
+	rm -rf *o *~ raytracer
