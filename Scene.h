@@ -12,6 +12,7 @@ class Scene{
         int width = 640;
         int height = 460;
         float aspectRatio;
+        vec3 attenuation = vec3(1, 0, 0);
 
         std::string output_filename = "output.png";
 

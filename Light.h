@@ -1,6 +1,6 @@
 #pragma once
 
-enum class LightType{ direction, point};
+enum class LightType{ directional, point};
 class Light{
     public:
         float x, y, z;

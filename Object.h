@@ -26,9 +26,10 @@ class Object{
         float ambient[3] = {0, 0, 0};
         float diffuse[3] = {0, 0, 0};
         float specular[3] = {0, 0, 0};
+        float emission[3] = {0, 0, 0};
         float shininess = 0;
 
-        mat4 transform, inverseTransform, inverseTransposedTransform, transposedInversedTransforrm;
+        mat4 transform, inverseTransform, inverseTransposedTransform, transposedInverseTransform;
 
 };
 
