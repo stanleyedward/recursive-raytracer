@@ -6,36 +6,44 @@ LDFLAGS = -framework GLUT -framework OpenGL -L./lib/mac/ \
 		-L"/System/Library/Frameworks/OpenGL.framework/Libraries" \
 		-lGL -lGLU -lm -lstdc++ -lfreeimage
 else
-CFLAGS = -g -DGL_GLEXT_PROTOTYPES -no-pie
+CFLAGS = -g -DGL_GLEXT_PROTOTYPES 
 INCFLAGS = -I./glm-0.9.7.1 -I./include/ -I/usr/X11R6/include -I/sw/include \
 		-I/usr/sww/include -I/usr/sww/pkg/Mesa/include
 LDFLAGS = -L/usr/X11R6/lib -L/sw/lib -L/usr/sww/lib -L./lib/nix/ \
 		-L/usr/sww/bin -L/usr/sww/pkg/Mesa/lib -lGLEW -lglut -lGLU -lGL -lX11 -lfreeimage
 endif
-
-all: raytracer
+  
+all : raytracer
 
 Camera.o : Camera.cpp Camera.h
 	${CC} ${CFLAGS} ${INCFLAGS} -c Camera.cpp
 
-Object.o : Object.cpp Object.h
-	${CC} ${CFLAGS} ${INCFLAGS} -c Object.cpp
-
 Transform.o: Transform.cpp Transform.h
 	${CC} ${CFLAGS}  ${INCFLAGS} -c Transform.cpp
 
-main.o: main.cpp ray_proj.h Transform.h intersection.h readfile.h variables.h
-	$(CC) $(CFLAGS) $(INCFLAGS) -c main.cpp
-ray_proj.o: ray_proj.cpp ray_proj.h
-	$(CC) $(CFLAGS) $(INCFLAGS) -c ray_proj.cpp
-readfile.o: readfile.cpp readfile.h variables.h Transform.h
-	$(CC) $(CFLAGS) $(INCFLAGS) -c readfile.cpp
-intersection.o: intersection.cpp intersection.h ray_proj.h
-	$(CC) $(CFLAGS) $(INCFLAGS) -c intersection.cpp
+FileReader.o : FileReader.cpp 
+	${CC} ${CFLAGS} ${INCFLAGS} -c FileReader.cpp
 
+Light.o : Light.cpp Light.h 
+	${CC} ${CFLAGS} ${INCFLAGS} -c Light.cpp
 
-raytracer: main.o intersection.o Transform.o readfile.o Object.o variables.h readfile.h intersection.h Transform.h ray_proj.h 
-	$(CC) $(CFLAGS) -o raytracer Object.o main.o Transform.o intersection.o readfile.o $(INCFLAGS) $(LDFLAGS) 
+main.o : main.cpp Scene.h Camera.h FileReader.h Renderer.h
+	${CC} ${CFLAGS} ${INCFLAGS} -c main.cpp
 
-clean: 
-	rm -rf *o *~ raytracer
+Object.o : Object.cpp Object.h
+	${CC} ${CFLAGS} ${INCFLAGS} -c Object.cpp
+
+Ray.o : Ray.cpp Ray.h
+	${CC} ${CFLAGS} ${INCFLAGS} -c Ray.cpp
+
+Renderer.o : Renderer.cpp Renderer.h
+	${CC} ${CFLAGS} ${INCFLAGS} -c Renderer.cpp
+
+Scene.o : Scene.cpp Scene.h
+	${CC} ${CFLAGS} ${INCFLAGS} -c Scene.cpp
+	
+raytracer : main.o Transform.o Camera.o Scene.o Renderer.o Ray.o Object.o Light.o FileReader.o
+	${CC} ${CFLAGS} ${INCFLAGS} main.o Transform.o Camera.o Scene.o Renderer.o Ray.o Object.o Light.o FileReader.o ${LDFLAGS} -o raytracer
+
+clean:
+	  rm -rf *o *~ raytracer
