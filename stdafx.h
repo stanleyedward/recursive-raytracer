@@ -1,5 +1,4 @@
 #pragma once
-#include "glm/glm.hpp"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -9,8 +8,7 @@
 #include <vector>
 #define _USE_MATH_DEFINES
 #include <math.h>
-
-
+#include "glm/glm.hpp"
 
 using namespace glm;
 using namespace std;
