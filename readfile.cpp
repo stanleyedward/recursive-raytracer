@@ -20,41 +20,40 @@
 
 /*****************************************************************************/
 
-// Basic includes to get this file to work.  
 #include "readfile.h"
-using namespace std;
 
+using namespace std;
 
 // You may not need to use the following two functions, but it is provided
 // here for convenience
 
 // The function below applies the appropriate transform to a 4-vector
-void ReadFile::matransform(stack<mat4> &transfstack, float* values) 
+void ReadFile::matransform(stack<mat4> &transfstack, float* values)
 {
-  mat4 transform = transfstack.top(); 
-  vec4 valvec = vec4(values[0],values[1],values[2],values[3]); 
-  vec4 newval = transform * valvec; 
-  for (int i = 0; i < 4; i++) values[i] = newval[i]; 
+    mat4 transform = transfstack.top(); 
+    vec4 valvec = vec4(values[0],values[1],values[2],values[3]); 
+    vec4 newval = transform * valvec; 
+    for (int i = 0; i < 4; i++) values[i] = newval[i]; 
 }
 
-void ReadFile::rightmultiply(const mat4 & M, stack<mat4> &transfstack) 
+void ReadFile::rightmultiply(const mat4 & M, stack<mat4> &transfstack)
 {
-  mat4 &T = transfstack.top(); 
-  T = T * M; 
+    mat4 &T = transfstack.top(); 
+    T = T * M; 
 }
 
 // Function to read the input data values
 // Use is optional, but should be very helpful in parsing.  
-bool ReadFile::readvals(stringstream &s, const int numvals, float* values) 
+bool ReadFile::readvals(stringstream &s, const int numvals, float* values)
 {
-  for (int i = 0; i < numvals; i++) {
-    s >> values[i]; 
-    if (s.fail()) {
-      cout << "Failed reading value " << i << " will skip\n"; 
-      return false;
+    for (int i = 0; i < numvals; i++) {
+        s >> values[i]; 
+        if (s.fail()) {
+            cout << "Failed reading value " << i << " will skip\n"; 
+            return false;
+        }
     }
-  }
-  return true; 
+    return true; 
 }
 
 std::unique_ptr<Scene> ReadFile::readfile(const char* filename)
@@ -66,7 +65,6 @@ std::unique_ptr<Scene> ReadFile::readfile(const char* filename)
     float shininess;
 
     std::unique_ptr<Scene> scene = std::make_unique<Scene>();
-    //Scene* scene = new Scene();
 
     int maxvertices;
     int vertexCounter = 0;
@@ -78,7 +76,7 @@ std::unique_ptr<Scene> ReadFile::readfile(const char* filename)
     in.open(filename); 
     if (in.is_open()) {
         stack <mat4> transfstack; 
-        transfstack.push(mat4(1.0));  // identity
+        transfstack.push(mat4(1.0)); 
 
         getline (in, str); 
         while (in) {
@@ -98,10 +96,8 @@ std::unique_ptr<Scene> ReadFile::readfile(const char* filename)
                         validinput = readvals(s, 6, values); // Position/color for lts.
                         if (validinput) {
                             LightType type = LightType::point;
-                            /*if (cmd == "point") {
-                                type = LightType::point;
-                            }
-                            else */if (cmd == "directional") {
+                            
+                            if (cmd == "directional") {
                                 type = LightType::directional;
                             }
                             scene->lights[scene->numused] = Light(values[0], values[1], values[2], values[3], values[4], values[5], type);
@@ -134,7 +130,7 @@ std::unique_ptr<Scene> ReadFile::readfile(const char* filename)
                             if(validinput)
                                 scene->objects[scene->numobjects] = new Sphere(vec3(values[0], values[1], values[2]), values[3]);
                         }
-                        else /*if (cmd == "tri")*/ {
+                        else  { // if triangle
                             validinput = readvals(s, 3, values);
                             if (validinput)
                                 scene->objects[scene->numobjects] = new Triangle(localVertices[values[0]], localVertices[values[1]], localVertices[values[2]]);
