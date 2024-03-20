@@ -31,7 +31,7 @@ void Renderer::SceneRendering(std::string filename) {
 	FreeImage_Save(FIF_PNG, img, m_Scene->output_filename.c_str(), 0);
 
 	std::cout << "\n=======================================" << "\n";
-	std::cout << "Ray Tracing Complete" << "\n";
+	std::cout << "rays have been traced." << "\n";
 	std::cout << "=======================================" << "\n";
 	FreeImage_DeInitialise();
 }
