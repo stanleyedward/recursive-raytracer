@@ -21,13 +21,13 @@ Camera.o : Camera.cpp Camera.h
 Transform.o: Transform.cpp Transform.h
 	${CC} ${CFLAGS}  ${INCFLAGS} -c Transform.cpp
 
-FileReader.o : FileReader.cpp 
-	${CC} ${CFLAGS} ${INCFLAGS} -c FileReader.cpp
+readfile.o : readfile.cpp 
+	${CC} ${CFLAGS} ${INCFLAGS} -c readfile.cpp
 
 Light.o : Light.cpp Light.h 
 	${CC} ${CFLAGS} ${INCFLAGS} -c Light.cpp
 
-main.o : main.cpp Scene.h Camera.h FileReader.h Renderer.h
+main.o : main.cpp Scene.h Camera.h readfile.h Renderer.h
 	${CC} ${CFLAGS} ${INCFLAGS} -c main.cpp
 
 Object.o : Object.cpp Object.h
@@ -42,8 +42,8 @@ Renderer.o : Renderer.cpp Renderer.h
 Scene.o : Scene.cpp Scene.h
 	${CC} ${CFLAGS} ${INCFLAGS} -c Scene.cpp
 	
-raytracer : main.o Transform.o Camera.o Scene.o Renderer.o Ray.o Object.o Light.o FileReader.o
-	${CC} ${CFLAGS} ${INCFLAGS} main.o Transform.o Camera.o Scene.o Renderer.o Ray.o Object.o Light.o FileReader.o ${LDFLAGS} -o raytracer
+raytracer : main.o Transform.o Camera.o Scene.o Renderer.o Ray.o Object.o Light.o readfile.o
+	${CC} ${CFLAGS} ${INCFLAGS} main.o Transform.o Camera.o Scene.o Renderer.o Ray.o Object.o Light.o readfile.o ${LDFLAGS} -o raytracer
 
 clean:
 	  rm -rf *o *~ raytracer
