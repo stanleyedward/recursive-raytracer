@@ -4,18 +4,19 @@
 
 using namespace glm;
 
-class Camera{
-    private:
-        float fovx;
-        float fovy;
 
-    public:
-        Camera(){};
+class Camera {
+	private:
+		float fovx;
+		float fovy;
 
-        vec3 up, frontDirection, horDirection, eye, lookat;
-        float fov;
+	public:
+		vec3 up, frontDirection, horDirection, eye, lookat;
+		float fov;
+		
+		Camera() {};
 
-        Camera(vec3 eye, vec3 lookat, vec3 up, float fov);
-        void SetupFovx(float aspectRatio);
-        Ray createRay(float i, float j, int width, int height, float aspectRatio);
+		Camera(vec3 eye, vec3 lookat, vec3 up, float fov);
+		void SetupFovx(float aspectRatio);
+		Ray createRay(float i, float j, int width, int height, float aspectRatio);
 };
